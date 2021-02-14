@@ -1,10 +1,12 @@
+// ###### loading spinner is added as a bonuse purpose
+
 const imagesArea = document.querySelector('.images');
 const gallery = document.querySelector('.gallery');
 const galleryHeader = document.querySelector('.gallery-header');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
-const searchField= document.getElementById('search');
+const searchField = document.getElementById('search');
 // selected image 
 let sliders = [];
 
@@ -20,21 +22,24 @@ const showImages = (images) => {
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
-  images.forEach(image => {
-    let div = document.createElement('div');
-    div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img  class="img-fluid img-thumbnail " onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
-    togglerSpinner(false);
-  })
+  
+    images.forEach(image => {
 
+      let div = document.createElement('div');
+      div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
+      div.innerHTML = ` <img  class="img-fluid img-thumbnail " onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
+      gallery.appendChild(div)
+      togglerSpinner(false);
+    })
 }
+
 
 const getImages = (query) => {
   togglerSpinner(true);
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     // 1st issue(image loading prbolem) find and solved here
+  
     .then(data => showImages(data.hits))
     .catch(err => console.log(err))
 }
@@ -43,17 +48,17 @@ let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
   element.classList.add('added');
-  console.log('slider checking', sliders);
+  
 
   let item = sliders.indexOf(img);
-  console.log('item checker',item);
+
   if (item === -1) {
     sliders.push(img);
-  } else if(item > -1)  {
+  } else if (item > -1) {
     // alert('Hey, Already added !')
     sliders.splice(item, 1);
-  
-   }
+
+  }
 }
 var timer
 const createSlider = () => {
@@ -75,7 +80,7 @@ const createSlider = () => {
   document.querySelector('.main').style.display = 'block';
   // hide image aria
   imagesArea.style.display = 'none';
-// #3rd issue(negative duration) find and replace here
+  // #3rd issue(negative duration) find and replace here
   let expectDuration = document.getElementById('duration').value;
   // #2nd issue(id name) find and replace here
   if (expectDuration < 0) {
@@ -128,35 +133,33 @@ const changeSlide = (index) => {
 
 
 searchBtn.addEventListener('click', function () {
-  
-
-
-
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
-  const search = document.getElementById('search');
-  getImages(search.value)
+  // const search = document.getElementById('search');
+  getImages(searchField.value)
   sliders.length = 0;
+
+
 })
 // #4th issue(Enter key ) added here
 searchField.addEventListener('keyup', function (event) {
   if (event.key == "Enter") {
     document.getElementById('search-btn').click();
   }
- 
+
 })
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
 
-const togglerSpinner = (show)=>{
+const togglerSpinner = (show) => {
   const spinner = document.getElementById('loading-spinner');
 
-  if(show){
+  if (show) {
     spinner.classList.toggle('d-none');
   }
-  else{
+  else {
     spinner.classList.add('d-none');
   }
 }
